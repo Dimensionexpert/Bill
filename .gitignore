@@ -1,0 +1,14 @@
+# Generated databases
+*.db
+*.db-shm
+*.db-wal
+
+# Generated output
+output/
+
+# Environment and editor files
+.env
+.idea/
+
+# source folder
+source/

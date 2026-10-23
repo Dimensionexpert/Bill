@@ -1,0 +1,57 @@
+23 oct 2026
+
+decided to use csv format rather than excel.Means i have to use encode/csv library instead of xuri's excelize. because parsing that excel was such a mess, the merge cells and all is really difficult.
+
+even with the consistent formating the actual thing is really hard to parse and i think i did same with my payslip template (I hope anyone should not have to  reverse engineer that.)
+
+now i am trying to parse the csv.
+current plan is to make a parser that can completely parse a whole cluster section ( from cluster head to cluster wise  total )
+
+deciding not to use AI have real consequences, it was way easier with AI. With AI i just had to take the upper architectural descisions, bt this time around i have to plan how to read data.
+
+7:7
+finally some usefull data
+shapoBill go run ./main.go
+total len 470
+colum that have block info 2
+colum that have cluster info 52
+colum that have school info 321
+➜  shapoBill
+
+9:48
+➜  shapoBill go run ./main.go
+{272509 MAVAL}
+➜  shapoBill
+
+parsed the block info with string manipulation. idk how optimized it is or how bad it is, bt is what it is.
+➜  shapoBill go run ./main.go
+./source/c15.csv
+[5 21 22 37 38 52 53 70 71 92 93 105 106 126 127 143 144 166 167 185 186 203 204 219 220 240 241 257 258 270 271 293 294 318 319 331 332 355 356 370 371 383 384 401 402 421 422 436 437 450 451 468]
+{272509 MAVAL}
+➜  shapoBill go run ./main.go
+./source/c68.csv
+[5 18 19 33 34 47 48 55 56 66 67 72 73 87 88 96 97 110 111 121 122 128 129 140 141 152 153 163 164 169 170 181 182 202 203 209 210 222 223 231 232 238 239 249 250 268 269 276 277 285 286 297]
+{272509 MAVAL}
+➜  shapoBill go run ./main.go
+./source/s15.csv
+[5 20 21 36 37 51 52 69 70 90 92 104 105 125 126 142 143 164 166 184 185 202 204 218 219 239 240 256 257 269 270 292 293 317 318 330 331 354 355 369 370 382 383 400 401 420 421 435 436 449 450 467]
+{272509 MAVAL}
+➜  shapoBill go run ./main.go
+./source/s68.csv
+[5 20 21 36 37 51 52 69 70 91 92 104 105 125 126 142 143 165 166 184 185 202 203 218 219 239 240 256 257 269 270 292 293 317 318 330 331 354 355 369 370 382 383 400 401 420 421 435 436 449 450 467]
+{272509 MAVAL}
+➜  shapoBill
+
+works on all files.
+
+23:51
+now we have the getCodeName function that is supper useful, bt sadly the journey of this  function ends with parsing blockwise and clusterwisetotal. parsing school needs new strategy. which i am sure i can find, the worse case is i'll need 2 days for it. no wonder AI taking place of humans.
+parsed the fking csv and collected cluster information now.
+➜  shapoBill go run ./main.go
+./source/s68.csv
+[{272509 MAVAL}]
+lenght of cluster idx [5 21 37 52 70 92 105 126 143 166 185 203 219 240 257 270 293 318 331 355 370 383 401 421 436 450]
+length of cluster retrived [{0 ADHALE BU CLU3603014} {0 BAUR CLU3603028} {0 BEBADOHAL CLU3603027} {0 BHAJE CLU3603029} {0 BHOYARE CLU3603030} {0 CHAVASAR CLU3605440} {0 DARUMBRE CLU3603025} {0 GOVITRI CLU3603023} {0 INDORI CLU3603015} {0 KADADHE CLU3603016} {0 KALE CLU3603019} {0 KAMBRE NA MA CLU3603017} {0 KANHE CLU3603018} {0 KHADKALE CLU3603021} {0 KHANDI CLU3603022} {0 KUSAGAON BK CLU3603020} {0 LONAVALA CLU3605522} {0 MALEGAON KH CLU3603031} {0 NAVLAKH UMBRE CLU3603026} {0 SANGISE CLU3603036} {0 SHILIMB CLU3603035} {0 TAKAVE BU CLU3603024} {0 TALEGAON NAGAR PARISHAD CLU3605521} {0 VADESHWAR CLU3603032} {0 VARU CLU3603033} {0 VEHARGAON CLU3603034}]
+➜  shapoBill
+
+it was hell at first, bt this is fun, i was so happy when i got it right on my own. loved the feeling.
