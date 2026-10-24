@@ -2,7 +2,7 @@ package data
 
 type School struct {
 	UDISECode   string
-	MealsServed float64
-	Amount      float64
+	MealsServed string
+	Amount      string
 	SchoolName  string
 }

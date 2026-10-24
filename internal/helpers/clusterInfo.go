@@ -31,8 +31,8 @@ func GetClusterInfo(record [][]string, index []int) ([]data.Cluster, error) {
 	}
 	for i, _ := range index {
 		clusters = append(clusters, data.Cluster{
-			ClusterCode: clusterInfo[i].Code,
-			ClusterName: clusterInfo[i].Name,
+			ClusterCode: clusterInfo[i].First,
+			ClusterName: clusterInfo[i].Second,
 		})
 	}
 
@@ -64,44 +64,11 @@ func GetClusterServedAmount(record [][]string, index []int) ([]data.ServedAmount
 	}
 	for i, _ := range index {
 		clustersTotals = append(clustersTotals, data.ServedAmount{
-			Served: clusterInfo[i].Code,
-			Amount: clusterInfo[i].Name,
+			Served: clusterInfo[i].First,
+			Amount: clusterInfo[i].Second,
 		})
 	}
 
 	return clustersTotals, nil
-
-}
-
-func GetBlockServedAmountIDs(record [][]string) ([]int, error) {
-	var index []int
-
-	for i, row := range record {
-		if len(row) == 0 {
-			continue
-		}
-
-		if strings.Contains(strings.ToLower(strings.TrimSpace(row[0])), "block wise total") {
-			index = append(index, i)
-		}
-	}
-
-	return index, nil
-}
-
-func GetBlockServedAmount(record [][]string, index []int) ([]data.ServedAmount, error) {
-	var blockTotal []data.ServedAmount
-	blockinfo, err := GetServedAmount(record, index)
-	if err != nil {
-		return nil, fmt.Errorf("error getting the code and name of cluster:%w", err)
-	}
-	for i, _ := range index {
-		blockTotal = append(blockTotal, data.ServedAmount{
-			Served: blockinfo[i].Code,
-			Amount: blockinfo[i].Name,
-		})
-	}
-
-	return blockTotal, nil
 
 }

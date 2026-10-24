@@ -60,22 +60,25 @@ func main() {
 	if err != nil {
 		fmt.Println("can't get the clusterTotal id info:", err)
 	}
-	blockSeveredAmount, err := helpers.GetBlockServedAmount(record,blockSeveredAmountidx)
+	blockSeveredAmount, err := helpers.GetBlockServedAmount(record, blockSeveredAmountidx)
 	if err != nil {
 		fmt.Println("can't get the clusterTotal id info:", err)
 	}
 
-	fmt.Println(blockidx)       // clean and expected output
-	fmt.Println(blockNamenCode) // clean and expected output
+	schoolIdx, err := helpers.GetSchoolInfoIdx(record, blockNamenCode[0].BlockCode)
+	if err != nil {
+		fmt.Println("can't get the school info indices info:", err)
+	}
 
-	fmt.Println(clusterCodeNameidx) // clean and expected output
-	fmt.Println(clusterNamenCode)   // clean and expected output
+	schoolInfo, err := helpers.GetUDISENameServedAmount(record, schoolIdx)
+	if err != nil {
+		fmt.Println("can't get the school info :", err)
+	}
 
-	fmt.Println(clusterSeveredAmountidx) // clean and expected output
-	fmt.Println(clusterSeveredAmount)    // clean and expected output
-
-	fmt.Println(blockSeveredAmountidx) // clean and expected output
-	fmt.Println(blockSeveredAmount) // clean and expected output
-	
+	fmt.Printf("Block Name:%s  Code:%s\n", blockNamenCode[0].BlockName, blockNamenCode[0].BlockCode)                                                                             // checked ! clean and expected output
+	fmt.Printf("Block Served:%s  Total:%s\n", blockSeveredAmount[0].Served, blockSeveredAmount[0].Amount)                                                                        // checked ! clean and expected output
+	fmt.Printf("Cluster Name:%s  Code:%s\n", clusterNamenCode[0].ClusterName, clusterNamenCode[0].ClusterCode)                                                                   // checked ! clean and expected output
+	fmt.Printf("Cluster Served:%s  Total:%s\n", clusterSeveredAmount[0].Served, clusterSeveredAmount[0].Amount)                                                                  // checked ! Not expected output
+	fmt.Printf("School UDISE : %s Name : %s Meal served : %s Amount : %s\n", schoolInfo[0].UDISECode, schoolInfo[0].SchoolName, schoolInfo[0].MealsServed, schoolInfo[0].Amount) // checked ! clean and expected output
 
 }
