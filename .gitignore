@@ -12,3 +12,6 @@ output/
 
 # source folder
 source/
+
+# Personal development journal
+/timeline
