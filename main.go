@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file, err := os.Open("./source/s68.csv")
+	file, err := os.Open("./source/s15.csv")
 	if err != nil {
 		fmt.Println("can't open file:", err)
 		return
@@ -35,19 +35,47 @@ func main() {
 		fmt.Println("can't get the block info:", err)
 	}
 
-	clusteridx, err := helpers.GetClusterInfoIDs(record)
+	clusterCodeNameidx, err := helpers.GetClusterCodeNameIDs(record)
 	if err != nil {
 		fmt.Println("can't get block indices:", err)
 		return
 	}
 
-	clusterNamenCode, err := helpers.GetClusterInfo(record, clusteridx)
+	clusterNamenCode, err := helpers.GetClusterInfo(record, clusterCodeNameidx)
 	if err != nil {
 		fmt.Println("can't get the block info:", err)
 	}
 
-	fmt.Println(blockNamenCode)
-	fmt.Println("lenght of cluster idx", clusteridx)
-	fmt.Println("length of cluster retrived", clusterNamenCode)
+	clusterSeveredAmountidx, err := helpers.GetClusterServedAmountIDs(record)
+	if err != nil {
+		fmt.Println("can't get the clusterTotal id info:", err)
+	}
+
+	clusterSeveredAmount, err := helpers.GetClusterServedAmount(record, clusterSeveredAmountidx)
+	if err != nil {
+		fmt.Println("can't get the clusterTotal info:", err)
+	}
+
+	blockSeveredAmountidx, err := helpers.GetBlockServedAmountIDs(record)
+	if err != nil {
+		fmt.Println("can't get the clusterTotal id info:", err)
+	}
+	blockSeveredAmount, err := helpers.GetBlockServedAmount(record,blockSeveredAmountidx)
+	if err != nil {
+		fmt.Println("can't get the clusterTotal id info:", err)
+	}
+
+	fmt.Println(blockidx)       // clean and expected output
+	fmt.Println(blockNamenCode) // clean and expected output
+
+	fmt.Println(clusterCodeNameidx) // clean and expected output
+	fmt.Println(clusterNamenCode)   // clean and expected output
+
+	fmt.Println(clusterSeveredAmountidx) // clean and expected output
+	fmt.Println(clusterSeveredAmount)    // clean and expected output
+
+	fmt.Println(blockSeveredAmountidx) // clean and expected output
+	fmt.Println(blockSeveredAmount) // clean and expected output
+	
 
 }
