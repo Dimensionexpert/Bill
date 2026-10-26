@@ -22,23 +22,55 @@ func GetSchoolInfoIdx(record [][]string, blockCode string) ([]int, error) {
 
 }
 
-func GetUDISENameServedAmount(record [][]string, index []int) ([]data.School, error) {
-	var schoolInfo []data.School
+func GetSchool(record [][]string, index []int) (data.School, error) {
+	idx := index[0]
 
-	for _, idx := range index {
-		udise := strings.TrimSpace(record[idx][2])
-		schoolName := strings.TrimSpace(record[idx][4])
-		mealServed := strings.TrimSpace(record[idx][6])
-		amount := strings.TrimSpace(record[idx][8])
-
-		schoolInfo = append(schoolInfo, data.School{
-			UDISECode:   udise,
-			SchoolName:  schoolName,
-			MealsServed: mealServed,
-			Amount:      amount,
-		})
-
-	}
-	return schoolInfo, nil
-
+	return data.School{
+		UDISECode:   strings.TrimSpace(record[idx][2]),
+		SchoolName:  strings.TrimSpace(record[idx][4]),
+		MealsServed: strings.TrimSpace(record[idx][6]),
+		Amount:      strings.TrimSpace(record[idx][8]),
+	}, nil
 }
+
+func GetSchools(record [][]string, indexes []int) ([]data.School, error) {
+	var schools []data.School
+
+	for _, idx := range indexes {
+		school, err := GetSchool(record, []int{idx})
+		if err != nil {
+			return nil, err
+		}
+
+		schools = append(schools, school)
+	}
+
+	return schools, nil
+}
+
+
+
+
+
+//deprecated
+
+// func GetUDISENameServedAmounts(record [][]string, index []int) ([]data.School, error) {
+// 	var schoolInfo []data.School
+
+// 	for _, idx := range index {
+// 		udise := strings.TrimSpace(record[idx][2])
+// 		schoolName := strings.TrimSpace(record[idx][4])
+// 		mealServed := strings.TrimSpace(record[idx][6])
+// 		amount := strings.TrimSpace(record[idx][8])
+
+// 		schoolInfo = append(schoolInfo, data.School{
+// 			UDISECode:   udise,
+// 			SchoolName:  schoolName,
+// 			MealsServed: mealServed,
+// 			Amount:      amount,
+// 		})
+
+// 	}
+// 	return schoolInfo, nil
+
+// }
