@@ -52,15 +52,15 @@ func ValidateClusterTotals(clusterServedAmount []data.ServedAmount, clusterWiseS
 	// since clusterServedAmount stores a struct that holds Served, Amount respectively
 	// {2377 3684} like this. here {Served:2377 Amount:3684} as string and this data is extracted from csv.
 	// we comparing this with our totals calculated by GetTotalAmountsCluster()
-	// if len(clusterServedAmount) != len(clusterWiseServedTotal) ||
-	// 	len(clusterServedAmount) != len(clusterWiseAmountTotal) {
-	// 	return false, fmt.Errorf(
-	// 		"cluster totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
-	// 		len(clusterServedAmount),
-	// 		len(clusterWiseServedTotal),
-	// 		len(clusterWiseAmountTotal),
-	// 	)
-	// }
+	if len(clusterServedAmount) != len(clusterWiseServedTotal) ||
+		len(clusterServedAmount) != len(clusterWiseAmountTotal) {
+		return false, fmt.Errorf(
+			"cluster totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
+			len(clusterServedAmount),
+			len(clusterWiseServedTotal),
+			len(clusterWiseAmountTotal),
+		)
+	}
 	for i := range clusterWiseServedTotal {
 
 		served, err := strconv.Atoi(clusterServedAmount[i].Served)
