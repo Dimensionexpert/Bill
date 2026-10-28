@@ -1,6 +1,6 @@
 # Bill
 
-ShapoBill is a Go-based parser for government school meal bill data.
+Bill is a Go-based parser for government school meal bill data.
 
 ## Features
 
@@ -16,8 +16,6 @@ ShapoBill is a Go-based parser for government school meal bill data.
 ## Status
 
 Currently under developement. Database integration and template generation is yet to add.
-Wails integretion might come. dependening upon the circumstences ;).\
+Wails integretion might come. dependening upon the circumstences ;).
 
 ## current Architecture
-
-[![Architecture diagram of dimensionexpert/bill](https://gitdiagram.com/dimensionexpert/bill/diagram.png)](https://gitdiagram.com/dimensionexpert/bill?utm_source=readme&utm_medium=picture)
