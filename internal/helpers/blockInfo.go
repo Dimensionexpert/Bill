@@ -27,7 +27,7 @@ func GetBlockInfo(record [][]string, index []int) ([]data.Block, error) {
 	var blocks []data.Block
 	blockInfo, err := GetCodeName(record, index)
 	if err != nil {
-		return nil, fmt.Errorf("error getting the code and name of block:%w", err)
+		return nil, fmt.Errorf(":( can't get the code and name of block:%w", err)
 	}
 
 	for i, _ := range index {
@@ -60,7 +60,7 @@ func GetBlockServedAmount(record [][]string, index []int) ([]data.ServedAmount, 
 	var blockTotal []data.ServedAmount
 	blockinfo, err := GetServedAmount(record, index)
 	if err != nil {
-		return nil, fmt.Errorf("error getting the code and name of cluster:%w", err)
+		return nil, fmt.Errorf(":( can't get the code and name of cluster:%w", err)
 	}
 	for i, _ := range index {
 		blockTotal = append(blockTotal, data.ServedAmount{

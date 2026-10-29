@@ -4,7 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/Dimensionexpert/Bills/internal/database"
 	"github.com/Dimensionexpert/Bills/internal/helpers"
 	"github.com/Dimensionexpert/Bills/internal/validate"
 )
@@ -13,9 +15,9 @@ func main() {
 	// ---------------------------------
 	// open the csv
 	// ---------------------------------
-	file, err := os.Open("./source/s15.csv")
+	file, err := os.Open("./source/Jun/c68.csv")
 	if err != nil {
-		fmt.Println("can't open file:", err)
+		fmt.Println(":( can't open file:", err)
 		return
 	}
 	defer file.Close()
@@ -24,7 +26,7 @@ func main() {
 
 	record, err := csv.NewReader(file).ReadAll()
 	if err != nil {
-		fmt.Println("can't read CSV:", err)
+		fmt.Println(":( can't read CSV:", err)
 		return
 	}
 	// ---------------------------------
@@ -32,13 +34,13 @@ func main() {
 	// ---------------------------------
 	blockidx, err := helpers.GetBlockInfoIDs(record)
 	if err != nil {
-		fmt.Println("can't get block indices:", err)
+		fmt.Println(":( can't get block indices:", err)
 		return
 	}
 
 	blockNamenCode, err := helpers.GetBlockInfo(record, blockidx)
 	if err != nil {
-		fmt.Println("can't get the block info:", err)
+		fmt.Println(":( can't get the block info:", err)
 	}
 
 	// ---------------------------------
@@ -46,13 +48,13 @@ func main() {
 	// ---------------------------------
 	clusterCodeNameidx, err := helpers.GetClusterCodeNameIDs(record)
 	if err != nil {
-		fmt.Println("can't get cluster indices:", err)
+		fmt.Println(":( can't get cluster indices:", err)
 		return
 	}
 
 	clusterNamenCode, err := helpers.GetClusterInfo(record, clusterCodeNameidx)
 	if err != nil {
-		fmt.Println("can't get the cluster info:", err)
+		fmt.Println(":( can't get the cluster info:", err)
 	}
 
 	// ---------------------------------
@@ -60,12 +62,12 @@ func main() {
 	// ---------------------------------
 	clusterSeveredAmountidx, err := helpers.GetClusterServedAmountIDs(record)
 	if err != nil {
-		fmt.Println("can't get the cluster total IDs:", err)
+		fmt.Println(":( can't get the cluster total IDs:", err)
 	}
 
 	clusterSeveredAmount, err := helpers.GetClusterServedAmount(record, clusterSeveredAmountidx)
 	if err != nil {
-		fmt.Println("can't get the cluster totals:", err)
+		fmt.Println(":( can't get the cluster totals:", err)
 	}
 
 	// ---------------------------------
@@ -73,12 +75,12 @@ func main() {
 	// ---------------------------------
 	blockSeveredAmountidx, err := helpers.GetBlockServedAmountIDs(record)
 	if err != nil {
-		fmt.Println("can't get the block total IDs:", err)
+		fmt.Println(":( can't get the block total IDs:", err)
 	}
 
 	blockSeveredAmount, err := helpers.GetBlockServedAmount(record, blockSeveredAmountidx)
 	if err != nil {
-		fmt.Println("can't get the block totals:", err)
+		fmt.Println(":( can't get the block totals:", err)
 	}
 
 	// ---------------------------------
@@ -86,12 +88,12 @@ func main() {
 	// ---------------------------------
 	schoolIdx, err := helpers.GetSchoolInfoIdx(record, blockNamenCode[0].BlockCode)
 	if err != nil {
-		fmt.Println("can't get the school indices:", err)
+		fmt.Println(":( can't get the school indices:", err)
 	}
 
 	schoolInfo, err := helpers.GetSchools(record, schoolIdx)
 	if err != nil {
-		fmt.Println("can't get the school information:", err)
+		fmt.Println(":( can't get the school information:", err)
 	}
 
 	// ---------------------------------
@@ -103,7 +105,7 @@ func main() {
 		schoolIdx,
 	)
 	if err != nil {
-		fmt.Println("can't get school indices by cluster:", err)
+		fmt.Println(":( can't get school indices by cluster:", err)
 	}
 
 	schoolsByclusterInfo, err := helpers.SchoolsByClusterinfo(
@@ -112,7 +114,7 @@ func main() {
 		schoolByClusteridx,
 	)
 	if err != nil {
-		fmt.Println("can't group schools by cluster:", err)
+		fmt.Println(":( can't group schools by cluster:", err)
 	}
 
 	// ---------------------------------
@@ -124,7 +126,7 @@ func main() {
 	// ---------------------------------
 	clusterWiseServedTotal, clusterWiseAmountTotal, err := validate.GetTotalAmountsCluster(schoolsByclusterInfo)
 	if err != nil {
-		fmt.Printf("calculating cluster totals failed: %v\n", err)
+		fmt.Printf(":( calculating cluster totals failed: %v\n", err)
 	}
 
 	clusterOk, err := validate.ValidateClusterTotals(
@@ -134,16 +136,16 @@ func main() {
 	)
 
 	if err != nil {
-		fmt.Printf("Cluster validation failed: %v\n", err)
+		fmt.Printf(":( Cluster validation failed: %v\n", err)
 		return
 	}
 
 	if !clusterOk {
-		fmt.Println("Cluster validation failed")
+		fmt.Println(":( Cluster validation failed")
 		return
 	}
 
-	fmt.Println("Cluster validation passed")
+	fmt.Println(":) Cluster validation passed")
 
 	// ---------------------------------
 	// block wise validation
@@ -151,21 +153,21 @@ func main() {
 
 	blockWiseServedTotal, blockWiseAmountTotal, err := validate.GetTotalAmountsBlock(clusterSeveredAmount)
 	if err != nil {
-		fmt.Println("fuck no")
+		fmt.Printf(":( calculating block totals failed: %v\n", err)
 	}
 
 	blockOk, err := validate.ValidateBlockTotals(blockSeveredAmount, blockWiseServedTotal, blockWiseAmountTotal)
 	if err != nil {
-		fmt.Printf("Block validation failed: %v\n", err)
+		fmt.Printf(":( Block validation failed: %v\n", err)
 		return
 	}
 
 	if !blockOk {
-		fmt.Println("Cluster validation failed")
+		fmt.Println(":( Block validation failed")
 		return
 	}
 
-	fmt.Println("Block validation passed")
+	fmt.Println(":) Block validation passed")
 
 	// ---------------------------------
 	// data cross checking
@@ -180,5 +182,35 @@ func main() {
 	fmt.Printf("The cluster:%s have schools:%v\n", schoolsByclusterInfo[0].ClusterName, schoolsByclusterInfo[0].Schools)
 	fmt.Printf("Cluster totals served: %v  amount: %v\n", clusterSeveredAmount, clusterWiseAmountTotal)
 	fmt.Printf("Block totals served: %v  amount: %v\n", blockWiseServedTotal, blockWiseAmountTotal)
+
+	// ---------------------------------
+	// database op
+	// ---------------------------------
+
+	db, err := database.Open("./database.db")
+	if err != nil {
+		fmt.Printf(":( failed to open database :%s", err)
+		return
+	}
+	defer db.Close()
+
+	// trying inserting
+
+	start := time.Now()
+
+	if err := database.InsertBlocks(db, blockNamenCode, clusterNamenCode, schoolsByclusterInfo); err != nil {
+		fmt.Printf(":( failed transaction :%s", err)
+	}
+
+	fmt.Println(time.Since(start))
+
+	// querying rows
+
+	rows, err := db.Query(`SELECT * FROM blocks;`)
+	if err != nil {
+		fmt.Printf(":( failed to get rows for '(`SELECT * FROM blocks;)`' query :%s ", err)
+		return
+	}
+	defer rows.Close()
 
 }

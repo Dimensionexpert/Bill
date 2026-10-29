@@ -33,6 +33,7 @@ func SchoolsByClusterinfo(record [][]string, clusterinfo []data.Cluster, index [
 		}
 
 		SchoolsByCluster = append(SchoolsByCluster, data.SchoolsByCluster{
+			CLusterCode: clusterinfo[i].ClusterCode,
 			ClusterName: clusterinfo[i].ClusterName,
 			Schools:     schools,
 		})

@@ -23,7 +23,7 @@ func GetTotalAmountsBlock(
 		served, err := strconv.Atoi(cluster.Served)
 		if err != nil {
 			return nil, nil, fmt.Errorf(
-				"invalid served value %q at cluster index %d: %w",
+				":( invalid served value %q at cluster index %d: %w",
 				cluster.Served, i, err,
 			)
 		}
@@ -31,7 +31,7 @@ func GetTotalAmountsBlock(
 		amount, err := strconv.Atoi(cluster.Amount)
 		if err != nil {
 			return nil, nil, fmt.Errorf(
-				"invalid amount value %q at cluster index %d: %w",
+				":( invalid amount value %q at cluster index %d: %w",
 				cluster.Amount, i, err,
 			)
 		}
@@ -55,7 +55,7 @@ func ValidateBlockTotals(
 	if len(blockSeveredAmount) != len(blockWiseServedTotal) ||
 		len(blockSeveredAmount) != len(blockWiseAmountTotal) {
 		return false, fmt.Errorf(
-			"block totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
+			":( block totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
 			len(blockSeveredAmount),
 			len(blockWiseServedTotal),
 			len(blockWiseAmountTotal),
@@ -66,7 +66,7 @@ func ValidateBlockTotals(
 		served, err := strconv.Atoi(blockSeveredAmount[i].Served)
 		if err != nil {
 			return false, fmt.Errorf(
-				"invalid served value %q at block index %d: %w",
+				":( invalid served value %q at block index %d: %w",
 				blockSeveredAmount[i].Served, i, err,
 			)
 		}
@@ -74,21 +74,21 @@ func ValidateBlockTotals(
 		amount, err := strconv.Atoi(blockSeveredAmount[i].Amount)
 		if err != nil {
 			return false, fmt.Errorf(
-				"invalid amount value %q at block index %d: %w",
+				":( invalid amount value %q at block index %d: %w",
 				blockSeveredAmount[i].Amount, i, err,
 			)
 		}
 
 		if blockWiseServedTotal[i] != served {
 			return false, fmt.Errorf(
-				"served mismatch at block index %d: calculated %d, source %d",
+				":( served mismatch at block index %d: calculated %d, source %d",
 				i, blockWiseServedTotal[i], served,
 			)
 		}
 
 		if blockWiseAmountTotal[i] != amount {
 			return false, fmt.Errorf(
-				"amount mismatch at block index %d: calculated %d, source %d",
+				":( amount mismatch at block index %d: calculated %d, source %d",
 				i, blockWiseAmountTotal[i], amount,
 			)
 		}

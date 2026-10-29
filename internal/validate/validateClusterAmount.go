@@ -21,7 +21,7 @@ func GetTotalAmountsCluster(schoolsByclusterInfo []data.SchoolsByCluster) (clust
 			amount, err := strconv.Atoi(school[j].Amount)
 			if err != nil {
 				return nil, nil, fmt.Errorf(
-					"invalid amount for school %s in cluster %s: %w",
+					":( invalid amount for school %s in cluster %s: %w",
 					school[j].UDISECode,
 					schoolsByclusterInfo[i].ClusterName,
 					err,
@@ -31,7 +31,7 @@ func GetTotalAmountsCluster(schoolsByclusterInfo []data.SchoolsByCluster) (clust
 			served, err := strconv.Atoi(school[j].MealsServed)
 			if err != nil {
 				return nil, nil, fmt.Errorf(
-					"invalid meals served for school %s in cluster %s: %w",
+					":( invalid meals served for school %s in cluster %s: %w",
 					school[j].UDISECode,
 					schoolsByclusterInfo[i].ClusterName,
 					err,
@@ -55,7 +55,7 @@ func ValidateClusterTotals(clusterServedAmount []data.ServedAmount, clusterWiseS
 	if len(clusterServedAmount) != len(clusterWiseServedTotal) ||
 		len(clusterServedAmount) != len(clusterWiseAmountTotal) {
 		return false, fmt.Errorf(
-			"cluster totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
+			":( cluster totals length mismatch: source=%d, calculated served=%d, calculated amount=%d",
 			len(clusterServedAmount),
 			len(clusterWiseServedTotal),
 			len(clusterWiseAmountTotal),
@@ -66,7 +66,7 @@ func ValidateClusterTotals(clusterServedAmount []data.ServedAmount, clusterWiseS
 		served, err := strconv.Atoi(clusterServedAmount[i].Served)
 		if err != nil {
 			return false, fmt.Errorf(
-				"invalid served value %q at cluster idx %d: %w",
+				":( invalid served value %q at cluster idx %d: %w",
 				clusterServedAmount[i].Served, i, err,
 			)
 		}
@@ -74,21 +74,21 @@ func ValidateClusterTotals(clusterServedAmount []data.ServedAmount, clusterWiseS
 		amount, err := strconv.Atoi(clusterServedAmount[i].Amount)
 		if err != nil {
 			return false, fmt.Errorf(
-				"invalid amount value %q at cluster idx %d: %w",
+				":( invalid amount value %q at cluster idx %d: %w",
 				clusterServedAmount[i].Amount, i, err,
 			)
 		}
 
 		if clusterWiseServedTotal[i] != served {
 			return false, fmt.Errorf(
-				"served mismatch at cluster idx %d: calculated %d, got %d",
+				":( served mismatch at cluster idx %d: calculated %d, got %d",
 				i, clusterWiseServedTotal[i], served,
 			)
 		}
 
 		if clusterWiseAmountTotal[i] != amount {
 			return false, fmt.Errorf(
-				"amount mismatch at cluster idx %d: calculated %d, got %d",
+				":( amount mismatch at cluster idx %d: calculated %d, got %d",
 				i, clusterWiseAmountTotal[i], amount,
 			)
 		}
