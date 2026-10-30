@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/Dimensionexpert/Bills/internal/models/data"
+	"github.com/Dimensionexpert/Bills/internal/validate"
 )
 
-func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []data.Cluster, schoolsByclusterInfo []data.SchoolsByCluster, blockServedAmount, clusterSeveredAmount []data.ServedAmount, scope, section string, year, month int) error {
+func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []data.Cluster, schoolsByclusterInfo []data.SchoolsByCluster, blockServedAmount, clusterServedAmount []data.ServedAmount, scope, section string, year, month int) error {
 
 	// create context here
 	//
@@ -20,6 +21,11 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []da
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
+	// validating inputs before starting transaction.
+	if err := validate.ValidateInputs(blockNamenCode, clusterNamenCode, schoolsByclusterInfo, blockServedAmount, clusterServedAmount, year, month); err != nil {
+		return fmt.Errorf("input validation failed: %w", err)
+	}
 
 	// start the transaction here
 	tx, err := db.BeginTx(ctx, nil)
@@ -149,7 +155,7 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []da
 	}
 	defer clusterTotalStmt.Close()
 
-	for i, cluster := range clusterSeveredAmount {
+	for i, cluster := range clusterServedAmount {
 		clusterCode := clusterNamenCode[i].ClusterCode
 		if _, err := clusterTotalStmt.ExecContext(ctx, scope, section, year, month, clusterCode, cluster.Served, cluster.Amount); err != nil {
 			return fmt.Errorf(":( failed to insert ClusterTotal %s :%w", clusterCode, err)
