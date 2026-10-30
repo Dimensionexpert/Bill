@@ -179,13 +179,24 @@ func main() {
 	fmt.Printf("Cluster Served:%s  Total:%s\n", clusterSeveredAmount[0].Served, clusterSeveredAmount[0].Amount)                                                                  // checked ! clean and expected output
 	fmt.Printf("School UDISE : %s Name : %s Meal served : %s Amount : %s\n", schoolInfo[0].UDISECode, schoolInfo[0].SchoolName, schoolInfo[0].MealsServed, schoolInfo[0].Amount) // checked ! clean and expected output
 	fmt.Printf("Ids of schools in Cluster:%s are:%v\n ", clusterNamenCode[0].ClusterName, schoolByClusteridx[0])                                                                 // checked ! clean and expected output
-	fmt.Printf("The cluster:%s have schools:%v\n", schoolsByclusterInfo[0].ClusterName, schoolsByclusterInfo[0].Schools)
+	fmt.Printf("The clusterCode:%s clusterName:%s have schools:%v\n", schoolsByclusterInfo[0].CLusterCode, schoolsByclusterInfo[0].ClusterName, schoolsByclusterInfo[0].Schools)
 	fmt.Printf("Cluster totals served: %v  amount: %v\n", clusterSeveredAmount, clusterWiseAmountTotal)
 	fmt.Printf("Block totals served: %v  amount: %v\n", blockWiseServedTotal, blockWiseAmountTotal)
 
 	// ---------------------------------
 	// database op
 	// ---------------------------------
+
+	// this variables (year month section scope) are temporarily declared here, i want this as input from user.
+	// altho i am thinking since the the section and sope parsing is pretty consistent from the csv i can leave it like this,
+	// so user have less inputs.
+	year := 2026
+	month := 6
+	section, scope, err := helpers.GetSectionScope(record)
+
+	if err != nil {
+		fmt.Printf(":( cant resolve section and scope cause: %s\n", err)
+	}
 
 	db, err := database.Open("./database.db")
 	if err != nil {
@@ -198,7 +209,8 @@ func main() {
 
 	start := time.Now()
 
-	if err := database.InsertBlocks(db, blockNamenCode, clusterNamenCode, schoolsByclusterInfo); err != nil {
+	if err := database.InsertIntoDB(db, blockNamenCode, clusterNamenCode, schoolsByclusterInfo, blockSeveredAmount,
+		clusterSeveredAmount, scope, section, year, month); err != nil {
 		fmt.Printf(":( failed transaction :%s", err)
 	}
 
