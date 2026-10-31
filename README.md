@@ -25,7 +25,8 @@ Bill is a Go-based parser for government school meal bill data.
   - Validate required input slices.
   - Ensure related slices have matching lengths before indexing.
   - Prevent empty or invalid data from reaching database insertion.
-- [ ] Implement bill template generation.
+- [ ] Add bank_info table if needed.
+- [ ] Implement bill template generation. 
 - [ ] Improve database integration and error handling.
 - [ ] Consider Wails integration for a desktop application, depending on project requirements.
 

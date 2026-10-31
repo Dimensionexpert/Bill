@@ -23,6 +23,14 @@ CREATE TABLE IF NOT EXISTS schools (
         REFERENCES clusters(cluster_code)
 );
 
+CREATE TABLE IF NOT EXISTS banks (
+    school_code TEXT PRIMARY KEY,
+    unique_code TEXT NOT NULL, -- as name suggest it is really unique i checked.
+    school_name TEXT NOT NULL,-- this holds the clean name of shools too.
+    acount_num TEXT NOT NULL
+
+);
+
 CREATE TABLE IF NOT EXISTS block_reports (
     scope TEXT NOT NULL
         CHECK (scope IN ('STATE', 'CENTRAL')),

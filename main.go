@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/Dimensionexpert/Bills/internal/database"
@@ -15,18 +13,15 @@ func main() {
 	// ---------------------------------
 	// open the csv
 	// ---------------------------------
-	file, err := os.Open("./source/Jun/c68.csv")
+	record, err := helpers.Open("./source/Jun/s68.csv")
 	if err != nil {
-		fmt.Println(":( can't open file:", err)
+		fmt.Printf("can't fking open the file %s", err)
 		return
 	}
-	defer file.Close()
 
-	fmt.Println(file.Name())
-
-	record, err := csv.NewReader(file).ReadAll()
+	bank, err := helpers.Open("./source/sources/dekhtehai.csv")
 	if err != nil {
-		fmt.Println(":( can't read CSV:", err)
+		fmt.Printf("can't fking open the file %s", err)
 		return
 	}
 	// ---------------------------------
@@ -169,6 +164,13 @@ func main() {
 
 	fmt.Println(":) Block validation passed")
 
+	// BANK INFO
+	bankInfo, err := helpers.GetBankInfo(bank)
+	if err != nil {
+		fmt.Printf(":( error getting bank info : %s", err)
+		return
+	}
+
 	// ---------------------------------
 	// data cross checking
 	// ---------------------------------
@@ -191,7 +193,7 @@ func main() {
 	// altho i am thinking since the the section and sope parsing is pretty consistent from the csv i can leave it like this,
 	// so user have less inputs.
 	year := 2026
-	month := 6
+	month := 4
 	section, scope, err := helpers.GetSectionScope(record)
 
 	if err != nil {
@@ -209,7 +211,7 @@ func main() {
 
 	start := time.Now()
 
-	if err := database.InsertIntoDB(db, blockNamenCode, clusterNamenCode, schoolsByclusterInfo, blockSeveredAmount,
+	if err := database.InsertIntoDB(db, blockNamenCode, bankInfo, clusterNamenCode, schoolsByclusterInfo, blockSeveredAmount,
 		clusterSeveredAmount, scope, section, year, month); err != nil {
 		fmt.Printf(":( failed transaction :%s", err)
 	}
@@ -224,5 +226,7 @@ func main() {
 		return
 	}
 	defer rows.Close()
+
+	fmt.Println(bankInfo[0])
 
 }

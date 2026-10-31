@@ -10,7 +10,7 @@ import (
 	"github.com/Dimensionexpert/Bills/internal/validate"
 )
 
-func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []data.Cluster, schoolsByclusterInfo []data.SchoolsByCluster, blockServedAmount, clusterServedAmount []data.ServedAmount, scope, section string, year, month int) error {
+func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.Bank, clusterNamenCode []data.Cluster, schoolsByclusterInfo []data.SchoolsByCluster, blockServedAmount, clusterServedAmount []data.ServedAmount, scope, section string, year, month int) error {
 
 	// create context here
 	//
@@ -101,6 +101,30 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, clusterNamenCode []da
 				return fmt.Errorf(":( failed to insert clusterCode %s, schoolCode %s, schoolName %s: %w", clusterCode, school.UDISECode, school.SchoolName, err)
 
 			}
+		}
+	}
+
+	// inserting the bank infos
+	insertBank := `
+		INSERT INTO banks (
+			unique_code,
+			school_code,
+			school_name,
+			acount_num
+		)
+		VALUES (?,?,?,?)
+		ON CONFLICT DO NOTHING
+	`
+	// setting it as ON CONFLICT DO NOTHING until i figure out what to do with it
+	insertBankStmt, err := tx.PrepareContext(ctx, insertBank)
+	if err != nil {
+		return fmt.Errorf(":( failed to prepare InsertBank statemente: %w", err)
+	}
+	defer insertBankStmt.Close()
+
+	for _, bank := range bankInfo {
+		if _, err := insertBankStmt.ExecContext(ctx, bank.UniqCode, bank.UDISE, bank.Name, bank.AcNum); err != nil {
+			return fmt.Errorf(":( insertBankStmt: failed to insert schoolCode %s, schoolName %s: %w", bank.UDISE, bank.Name, err)
 		}
 	}
 
