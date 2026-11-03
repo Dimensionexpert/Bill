@@ -1,8 +1,19 @@
 package data
 
-type Bank struct {
+type BankInfo struct {
 	UDISE    string
 	Name     string
-	AcNum    string
-	UniqCode string
+	PanNo    string
+	TanNo    string
+	Address  string
+	City     string
+	Country  string
+	State    string
+	District string
+	PinCode  string
+	Mobile   string
+	Email    string
+	BankName string
+	IFSC     string
+	AccNum   string
 }

@@ -23,12 +23,22 @@ CREATE TABLE IF NOT EXISTS schools (
         REFERENCES clusters(cluster_code)
 );
 
-CREATE TABLE IF NOT EXISTS banks (
+CREATE TABLE IF NOT EXISTS school_banks (
     school_code TEXT PRIMARY KEY,
-    unique_code TEXT NOT NULL, -- as name suggest it is really unique i checked.
-    school_name TEXT NOT NULL,-- this holds the clean name of shools too.
-    acount_num TEXT NOT NULL
-
+    school_name TEXT NOT NULL,-- this holds the clean name of shools too.  idk why the header in source is vendor name
+    pan_num TEXT NOT NULL,-- observed some duplicates 27250903222,27250919003 shares same pan AABLP1247J
+    tan_num TEXT, -- observed some duplicates here, will confirm tomorrow.
+    address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    country TEXT NOT NULL,
+    state TEXT NOT NULL,
+    district TEXT NOT NULL,
+    pincode TEXT NOT NULL,
+    mobile TEXT,
+    email TEXT,
+    bank_name TEXT NOT NULL,
+    ifsc_code TEXT NOT NULL,
+    account_number TEXT NOT NULL -- observed duplication bank of bododra
 );
 
 CREATE TABLE IF NOT EXISTS block_reports (

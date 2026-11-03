@@ -5,25 +5,40 @@ import (
 	"time"
 
 	"github.com/Dimensionexpert/Bills/internal/database"
+	"github.com/Dimensionexpert/Bills/internal/database/queries"
+	"github.com/Dimensionexpert/Bills/internal/excel"
 	"github.com/Dimensionexpert/Bills/internal/helpers"
 	"github.com/Dimensionexpert/Bills/internal/validate"
+	"github.com/xuri/excelize/v2"
 )
 
 func main() {
 	// ---------------------------------
 	// open the csv
 	// ---------------------------------
-	record, err := helpers.Open("./source/Jun/s68.csv")
+	record, err := helpers.Open("./source/Sep/c68.csv")
 	if err != nil {
 		fmt.Printf("can't fking open the file %s", err)
 		return
 	}
 
-	bank, err := helpers.Open("./source/sources/dekhtehai.csv")
+	bank, err := helpers.Open("./source/sources/bank.csv")
 	if err != nil {
 		fmt.Printf("can't fking open the file %s", err)
 		return
 	}
+
+	template, err := excelize.OpenFile("templates/template.xlsx")
+	if err != nil {
+		fmt.Printf("can't open the template %s", err)
+	}
+	defer template.Close()
+
+	rows, err := template.GetRows("Sheet1")
+	if err != nil {
+		fmt.Printf("can't get the rows template %s", err)
+	}
+
 	// ---------------------------------
 	// Parse block information
 	// ---------------------------------
@@ -180,7 +195,6 @@ func main() {
 	fmt.Printf("Cluster Name:%s  Code:%s\n", clusterNamenCode[0].ClusterName, clusterNamenCode[0].ClusterCode)                                                                   // checked ! clean and expected output
 	fmt.Printf("Cluster Served:%s  Total:%s\n", clusterSeveredAmount[0].Served, clusterSeveredAmount[0].Amount)                                                                  // checked ! clean and expected output
 	fmt.Printf("School UDISE : %s Name : %s Meal served : %s Amount : %s\n", schoolInfo[0].UDISECode, schoolInfo[0].SchoolName, schoolInfo[0].MealsServed, schoolInfo[0].Amount) // checked ! clean and expected output
-	fmt.Printf("Ids of schools in Cluster:%s are:%v\n ", clusterNamenCode[0].ClusterName, schoolByClusteridx[0])                                                                 // checked ! clean and expected output
 	fmt.Printf("The clusterCode:%s clusterName:%s have schools:%v\n", schoolsByclusterInfo[0].CLusterCode, schoolsByclusterInfo[0].ClusterName, schoolsByclusterInfo[0].Schools)
 	fmt.Printf("Cluster totals served: %v  amount: %v\n", clusterSeveredAmount, clusterWiseAmountTotal)
 	fmt.Printf("Block totals served: %v  amount: %v\n", blockWiseServedTotal, blockWiseAmountTotal)
@@ -193,7 +207,7 @@ func main() {
 	// altho i am thinking since the the section and sope parsing is pretty consistent from the csv i can leave it like this,
 	// so user have less inputs.
 	year := 2026
-	month := 4
+	month := 9
 	section, scope, err := helpers.GetSectionScope(record)
 
 	if err != nil {
@@ -216,17 +230,19 @@ func main() {
 		fmt.Printf(":( failed transaction :%s", err)
 	}
 
+	if err := database.InsertBankInfo(db, bankInfo); err != nil {
+		fmt.Printf(":( failed tranaction %s\n", err)
+	}
+
 	fmt.Println(time.Since(start))
 
-	// querying rows
-
-	rows, err := db.Query(`SELECT * FROM blocks;`)
+	data, err := queries.GetFinal(db, year, month)
 	if err != nil {
-		fmt.Printf(":( failed to get rows for '(`SELECT * FROM blocks;)`' query :%s ", err)
-		return
+		fmt.Printf("DUCK !! %s", err)
 	}
-	defer rows.Close()
 
-	fmt.Println(bankInfo[0])
+	fmt.Println(data[0])
+	fmt.Println(rows[0])
+	excel.GetBill(template, data)
 
 }
