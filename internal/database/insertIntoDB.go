@@ -38,6 +38,7 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	defer tx.Rollback()
 
 	// inserting the Block info
+
 	insertBlock, err := que.ReadFile("queries/insertBlocks.sql")
 	if err != nil {
 		return fmt.Errorf("error reading insertBlocks.sql")
@@ -55,16 +56,13 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	}
 
 	// inserting the cluster info
-	insertCluster := `
-		INSERT INTO clusters (
-			block_code,
-			cluster_code,
-			cluster_name
-		)
-		VALUES (?,?,?)
-		ON CONFLICT DO NOTHING;
-	`
-	clusterStmt, err := tx.PrepareContext(ctx, insertCluster)
+
+	insertCluster, err := que.ReadFile("queries/insertCluster.sql")
+	if err != nil {
+		return fmt.Errorf("error reading insertCluster.sql")
+	}
+
+	clusterStmt, err := tx.PrepareContext(ctx, string(insertCluster))
 	if err != nil {
 		return fmt.Errorf(":( failed to prepare InsertCluster statemente: %w", err)
 	}
@@ -79,16 +77,11 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	}
 
 	// inserting schools info
-	insertSchool := `
-		INSERT INTO schools (
-			cluster_code,
-			school_code,
-			school_name
-		)
-		VALUES (?,?,?)
-		ON CONFLICT DO NOTHING;
-	`
-	schoolStmt, err := tx.PrepareContext(ctx, insertSchool)
+	insertSchool, err := que.ReadFile("queries/insertSchool.sql")
+	if err != nil {
+		return fmt.Errorf("error reading insertSchool.sql")
+	}
+	schoolStmt, err := tx.PrepareContext(ctx, string(insertSchool))
 	if err != nil {
 		return fmt.Errorf(":( failed to prepare InsertSchool statemente: %w", err)
 	}
@@ -132,18 +125,12 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	}
 
 	// inserting the cluster totals
-	insertClusterTotal := `
-	    INSERT INTO cluster_reports (
-	        scope, section, year, month, cluster_code,
-	        total_served, total_amount
-	    )
-	    VALUES (?, ?, ?, ?, ?, ?, ?)
-	    ON CONFLICT(scope, section, year, month, cluster_code)
-	    DO UPDATE SET
-	        total_served = excluded.total_served,
-	        total_amount = excluded.total_amount;
-	`
-	clusterTotalStmt, err := tx.PrepareContext(ctx, insertClusterTotal)
+	insertClusterTotal, err := que.ReadFile("queries/insertClusterTotal.sql")
+	if err != nil {
+		return fmt.Errorf("error reading insertClusterTotal.sql")
+	}
+
+	clusterTotalStmt, err := tx.PrepareContext(ctx, string(insertClusterTotal))
 	if err != nil {
 		return fmt.Errorf(":( failed to prepare Clustertotal statemente: %w", err)
 	}
@@ -151,7 +138,7 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 
 	for i, cluster := range clusterServedAmount {
 		clusterCode := clusterNamenCode[i].ClusterCode
-		if _, err := clusterTotalStmt.ExecContext(ctx, scope, section, year, month, clusterCode, cluster.Served, cluster.Amount); err != nil {
+		if _, err := clusterTotalStmt.ExecContext(ctx, scope, section, year, month, clusterCode, cluster.Amount); err != nil {
 			return fmt.Errorf(":( failed to insert ClusterTotal %s :%w", clusterCode, err)
 		}
 	}

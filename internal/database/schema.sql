@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS cluster_reports (
     month INTEGER NOT NULL
         CHECK (month BETWEEN 1 AND 12),
     cluster_code TEXT NOT NULL,
-    total_served INTEGER NOT NULL
-        CHECK (total_served >= 0),
+    -- total_served INTEGER NOT NULL
+    --     CHECK (total_served >= 0),
     total_amount INTEGER NOT NULL
         CHECK (total_amount >= 0),
 
