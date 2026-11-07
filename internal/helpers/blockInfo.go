@@ -64,7 +64,7 @@ func GetBlockServedAmount(record [][]string, index []int) ([]data.ServedAmount, 
 	}
 	for i, _ := range index {
 		blockTotal = append(blockTotal, data.ServedAmount{
-			Served: blockinfo[i].First,
+			// Served: blockinfo[i].First,
 			Amount: blockinfo[i].Second,
 		})
 	}

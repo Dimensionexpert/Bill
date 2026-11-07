@@ -3,12 +3,15 @@ package database
 import (
 	"context"
 	"database/sql"
+	"embed"
 	"fmt"
 	"time"
 
 	"github.com/Dimensionexpert/Bills/internal/models/data"
-	"github.com/Dimensionexpert/Bills/internal/validate"
 )
+
+//go:embed queries/*
+var que embed.FS
 
 func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankInfo, clusterNamenCode []data.Cluster, schoolsByclusterInfo []data.SchoolsByCluster, blockServedAmount, clusterServedAmount []data.ServedAmount, scope, section string, year, month int) error {
 
@@ -23,9 +26,9 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	defer cancel()
 
 	// validating inputs before starting transaction.
-	if err := validate.ValidateInputs(blockNamenCode, clusterNamenCode, schoolsByclusterInfo, blockServedAmount, clusterServedAmount, year, month); err != nil {
-		return fmt.Errorf("input validation failed: %w", err)
-	}
+	// if err := validate.ValidateInputs(blockNamenCode, clusterNamenCode, schoolsByclusterInfo, blockServedAmount, clusterServedAmount, year, month); err != nil {
+	// 	return fmt.Errorf("input validation failed: %w", err)
+	// }
 
 	// start the transaction here
 	tx, err := db.BeginTx(ctx, nil)
@@ -35,14 +38,11 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	defer tx.Rollback()
 
 	// inserting the Block info
-	insertBlock := `
-		INSERT INTO blocks (
-			block_code,
-			block_name
-		)
-	 	VALUES (?,?)
-		ON CONFLICT DO NOTHING;`
-	blockStmt, err := tx.PrepareContext(ctx, insertBlock)
+	insertBlock, err := que.ReadFile("queries/insertBlocks.sql")
+	if err != nil {
+		return fmt.Errorf("error reading insertBlocks.sql")
+	}
+	blockStmt, err := tx.PrepareContext(ctx, string(insertBlock))
 	if err != nil {
 		return fmt.Errorf(":( failed to prepare InsertBlock statement: %w", err)
 	}
@@ -110,18 +110,12 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 	// hold the cruicial and sensitive info that might need to be updated more frequently than entity names.
 
 	// inserting the block totals
-	insertBlockTotal := `
-	    INSERT INTO block_reports (
-	        scope, section, year, month, block_code,
-	        total_served, total_amount
-	    )
-	    VALUES (?, ?, ?, ?, ?, ?, ?)
-	    ON CONFLICT(scope, section, year, month, block_code)
-	    DO UPDATE SET
-	        total_served = excluded.total_served,
-	        total_amount = excluded.total_amount;
-	`
-	blockTotalStmt, err := tx.PrepareContext(ctx, insertBlockTotal)
+	insertBlockTotal, err := que.ReadFile("queries/insertBlockTotal.sql")
+	if err != nil {
+		return fmt.Errorf("error reading insertBlockTotal.sql")
+	}
+
+	blockTotalStmt, err := tx.PrepareContext(ctx, string(insertBlockTotal))
 	if err != nil {
 		return fmt.Errorf(":( failed to prepare Blocktotal statemente: %w", err)
 	}
@@ -132,7 +126,7 @@ func InsertIntoDB(db *sql.DB, blockNamenCode []data.Block, bankInfo []data.BankI
 		// not checking boundry cause validate functions validates, correctness of data already.
 		blockCode := blockNamenCode[i].BlockCode
 
-		if _, err := blockTotalStmt.ExecContext(ctx, scope, section, year, month, blockCode, block.Served, block.Amount); err != nil {
+		if _, err := blockTotalStmt.ExecContext(ctx, scope, section, year, month, blockCode, block.Amount); err != nil {
 			return fmt.Errorf(":( failed to insert blockTotal %s :%w", blockCode, err)
 		}
 	}

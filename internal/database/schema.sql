@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS schools (
 CREATE TABLE IF NOT EXISTS school_banks (
     school_code TEXT PRIMARY KEY,
     school_name TEXT NOT NULL,-- this holds the clean name of shools too.  idk why the header in source is vendor name
-    pan_num TEXT NOT NULL,-- observed some duplicates 27250903222,27250919003 shares same pan AABLP1247J
+    pan_num TEXT,-- observed some duplicates 27250903222,27250919003 shares same pan AABLP1247J
     tan_num TEXT, -- observed some duplicates here, will confirm tomorrow.
     address TEXT NOT NULL,
     city TEXT NOT NULL,
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS block_reports (
     month INTEGER NOT NULL
         CHECK (month BETWEEN 1 AND 12),
     block_code TEXT NOT NULL,
-    total_served INTEGER NOT NULL
-        CHECK (total_served >= 0),
+    -- total_served INTEGER NOT NULL
+    --     CHECK (total_served >= 0),
     total_amount INTEGER NOT NULL
         CHECK (total_amount >= 0),
 

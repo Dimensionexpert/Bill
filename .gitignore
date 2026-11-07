@@ -5,6 +5,7 @@
 
 # Generated output
 output/
+*.xlsx
 
 # Environment and editor files
 .env

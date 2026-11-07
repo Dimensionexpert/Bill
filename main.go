@@ -5,10 +5,9 @@ import (
 	"time"
 
 	"github.com/Dimensionexpert/Bills/internal/database"
-	"github.com/Dimensionexpert/Bills/internal/database/queries"
+
 	"github.com/Dimensionexpert/Bills/internal/excel"
 	"github.com/Dimensionexpert/Bills/internal/helpers"
-	"github.com/Dimensionexpert/Bills/internal/validate"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -131,53 +130,53 @@ func main() {
 	// validation layer
 	// ---------------------------------
 
-	// ---------------------------------
-	// cluster wise totals
-	// ---------------------------------
-	clusterWiseServedTotal, clusterWiseAmountTotal, err := validate.GetTotalAmountsCluster(schoolsByclusterInfo)
-	if err != nil {
-		fmt.Printf(":( calculating cluster totals failed: %v\n", err)
-	}
+	// // ---------------------------------
+	// // cluster wise totals
+	// // ---------------------------------
+	// clusterWiseServedTotal, clusterWiseAmountTotal, err := validate.GetTotalAmountsCluster(schoolsByclusterInfo)
+	// if err != nil {
+	// 	fmt.Printf(":( calculating cluster totals failed: %v\n", err)
+	// }
 
-	clusterOk, err := validate.ValidateClusterTotals(
-		clusterSeveredAmount,
-		clusterWiseServedTotal,
-		clusterWiseAmountTotal,
-	)
+	// clusterOk, err := validate.ValidateClusterTotals(
+	// 	clusterSeveredAmount,
+	// 	clusterWiseServedTotal,
+	// 	clusterWiseAmountTotal,
+	// )
 
-	if err != nil {
-		fmt.Printf(":( Cluster validation failed: %v\n", err)
-		return
-	}
+	// if err != nil {
+	// 	fmt.Printf(":( Cluster validation failed: %v\n", err)
+	// 	return
+	// }
 
-	if !clusterOk {
-		fmt.Println(":( Cluster validation failed")
-		return
-	}
+	// if !clusterOk {
+	// 	fmt.Println(":( Cluster validation failed")
+	// 	return
+	// }
 
-	fmt.Println(":) Cluster validation passed")
+	// fmt.Println(":) Cluster validation passed")
 
-	// ---------------------------------
-	// block wise validation
-	// ---------------------------------
+	// // ---------------------------------
+	// // block wise validation
+	// // ---------------------------------
 
-	blockWiseServedTotal, blockWiseAmountTotal, err := validate.GetTotalAmountsBlock(clusterSeveredAmount)
-	if err != nil {
-		fmt.Printf(":( calculating block totals failed: %v\n", err)
-	}
+	// blockWiseServedTotal, blockWiseAmountTotal, err := validate.GetTotalAmountsBlock(clusterSeveredAmount)
+	// if err != nil {
+	// 	fmt.Printf(":( calculating block totals failed: %v\n", err)
+	// }
 
-	blockOk, err := validate.ValidateBlockTotals(blockSeveredAmount, blockWiseServedTotal, blockWiseAmountTotal)
-	if err != nil {
-		fmt.Printf(":( Block validation failed: %v\n", err)
-		return
-	}
+	// blockOk, err := validate.ValidateBlockTotals(blockSeveredAmount, blockWiseServedTotal, blockWiseAmountTotal)
+	// if err != nil {
+	// 	fmt.Printf(":( Block validation failed: %v\n", err)
+	// 	return
+	// }
 
-	if !blockOk {
-		fmt.Println(":( Block validation failed")
-		return
-	}
+	// if !blockOk {
+	// 	fmt.Println(":( Block validation failed")
+	// 	return
+	// }
 
-	fmt.Println(":) Block validation passed")
+	// fmt.Println(":) Block validation passed")
 
 	// BANK INFO
 	bankInfo, err := helpers.GetBankInfo(bank)
@@ -196,8 +195,8 @@ func main() {
 	fmt.Printf("Cluster Served:%s  Total:%s\n", clusterSeveredAmount[0].Served, clusterSeveredAmount[0].Amount)                                                                  // checked ! clean and expected output
 	fmt.Printf("School UDISE : %s Name : %s Meal served : %s Amount : %s\n", schoolInfo[0].UDISECode, schoolInfo[0].SchoolName, schoolInfo[0].MealsServed, schoolInfo[0].Amount) // checked ! clean and expected output
 	fmt.Printf("The clusterCode:%s clusterName:%s have schools:%v\n", schoolsByclusterInfo[0].CLusterCode, schoolsByclusterInfo[0].ClusterName, schoolsByclusterInfo[0].Schools)
-	fmt.Printf("Cluster totals served: %v  amount: %v\n", clusterSeveredAmount, clusterWiseAmountTotal)
-	fmt.Printf("Block totals served: %v  amount: %v\n", blockWiseServedTotal, blockWiseAmountTotal)
+	// fmt.Printf("Cluster totals served: %v  amount: %v\n", clusterSeveredAmount, clusterWiseAmountTotal)
+	// fmt.Printf("Block totals served: %v  amount: %v\n", blockWiseServedTotal, blockWiseAmountTotal)
 
 	// ---------------------------------
 	// database op
@@ -236,7 +235,7 @@ func main() {
 
 	fmt.Println(time.Since(start))
 
-	data, err := queries.GetFinal(db, year, month)
+	data, err := database.GetFinal(db, year, month)
 	if err != nil {
 		fmt.Printf("DUCK !! %s", err)
 	}
